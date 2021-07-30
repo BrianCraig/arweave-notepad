@@ -1,5 +1,5 @@
 
-import React, { Component } from 'react'
+import React, { Component, useContext } from 'react'
 import { createMedia } from '@artsy/fresnel'
 import { Link } from 'react-router-dom'
 import {
@@ -15,12 +15,45 @@ import {
   Label,
   List,
   Menu,
+  Modal,
   Segment,
   Sidebar,
   TextArea,
   Visibility,
 } from 'semantic-ui-react'
-import { EditorContextProvider } from '../contexts/EditorContext'
+import { EditorContext, EditorContextProvider } from '../contexts/EditorContext'
+
+const UploadModal = () => {
+  const { uploading, setUploading } = useContext(EditorContext)
+  return <Modal
+    onClose={() => setUploading(false)}
+    onOpen={() => setUploading(true)}
+    open={uploading}
+  >
+    <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
+    <Modal.Content image>
+      <Modal.Description>
+        <Header>Define a password for your notepad</Header>
+        <p>
+          This password will be asked whenever you open your notepad, keep in mind that there is no way for restoring it, so please make a paper copy.
+        </p>
+        <Input placeholder='Password...' type='password' />
+      </Modal.Description>
+    </Modal.Content>
+    <Modal.Actions>
+      <Button color='black' onClick={() => setUploading(false)}>
+        Cancel
+      </Button>
+      <Button
+        content="Proceed"
+        labelPosition='right'
+        icon='checkmark'
+        onClick={() => setUploading(false)}
+        positive
+      />
+    </Modal.Actions>
+  </Modal>
+}
 
 const style = {
   h1: {
@@ -31,8 +64,24 @@ const style = {
   }
 }
 
+const EditorButtons = () => {
+  const { uploading, setUploading } = useContext(EditorContext);
+  return <>
+    <Button color={'red'} disabled>
+      Discard Note Changes
+    </Button>
+    <Button color={'red'} disabled>
+      Remove Note
+    </Button>
+    <Button primary onClick={() => setUploading(true)}>
+      Save changes to Arweave Ledger
+    </Button>
+  </>
+}
+
 const EditorLayout = () =>
   <>
+    <UploadModal />
     <Header as='h1' content='My Notepad' style={style.h1} textAlign='center' />
     <Container>
       <Grid columns={2} stackable>
@@ -70,15 +119,7 @@ const EditorLayout = () =>
           <Divider />
           <Grid>
             <Grid.Column>
-              <Button color={'red'} disabled>
-                Discard Note Changes
-              </Button>
-              <Button color={'red'} disabled>
-                Remove Note
-              </Button>
-              <Button primary>
-                Save changes to Arweave Ledger
-              </Button>
+              <EditorButtons />
             </Grid.Column>
           </Grid>
         </Grid.Column>
