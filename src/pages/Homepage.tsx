@@ -50,7 +50,7 @@ const HomepageHeading: React.FunctionComponent<{ mobile: boolean }> = ({ mobile 
         marginTop: mobile ? '0.5em' : '1.5em',
       }}
     />
-    <Link to="/editor">
+    <Link to="/new">
       <Button primary size='huge'>
         Start writing
         <Icon name='arrow right' />
@@ -91,8 +91,8 @@ class DesktopContainer extends Component<{}, { fixed: boolean }> {
               size='large'
             >
               <Container>
-                <Menu.Item as='a'><Link to="/">Home</Link></Menu.Item>
-                <Menu.Item as='a'><Link to="/editor">Editor</Link></Menu.Item>
+                <Menu.Item><Link to="/">Home</Link></Menu.Item>
+                <Menu.Item><Link to="/new">Editor</Link></Menu.Item>
                 <Menu.Item as='a'>Careers</Menu.Item>
                 <Menu.Item position='right'>
                   <Button as='a' inverted={!fixed}>

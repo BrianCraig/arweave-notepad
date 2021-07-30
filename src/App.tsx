@@ -1,9 +1,8 @@
 import React from "react";
 import {
-  BrowserRouter as Router,
   Switch,
   Route,
-  Link
+  HashRouter
 } from "react-router-dom";
 import './App.css';
 import 'semantic-ui-css/semantic.min.css'
@@ -13,16 +12,19 @@ import { Editor } from "./pages/Editor";
 
 function App() {
   return (
-    <Router>
+    <HashRouter basename={window.location.pathname} hashType="noslash" >
       <Switch>
-        <Route path="/editor">
+        <Route path="/new">
+          <Editor new />
+        </Route>
+        <Route path="/:resourceid">
           <Editor />
         </Route>
         <Route path="/">
           <HomepageLayout />
         </Route>
       </Switch>
-    </Router>
+    </HashRouter>
   );
 }
 

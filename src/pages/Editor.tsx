@@ -1,7 +1,5 @@
 
-import React, { Component, useContext } from 'react'
-import { createMedia } from '@artsy/fresnel'
-import { Link } from 'react-router-dom'
+import React, { useContext } from 'react'
 import {
   Button,
   Container,
@@ -10,16 +8,10 @@ import {
   Grid,
   Header,
   Icon,
-  Image,
   Input,
-  Label,
-  List,
   Menu,
   Modal,
-  Segment,
-  Sidebar,
-  TextArea,
-  Visibility,
+  TextArea
 } from 'semantic-ui-react'
 import { EditorContext, EditorContextProvider } from '../contexts/EditorContext'
 
@@ -65,7 +57,7 @@ const style = {
 }
 
 const EditorButtons = () => {
-  const { uploading, setUploading } = useContext(EditorContext);
+  const { setUploading } = useContext(EditorContext);
   return <>
     <Button color={'red'} disabled>
       Discard Note Changes
@@ -128,7 +120,7 @@ const EditorLayout = () =>
   </>
 
 
-export const Editor = () =>
+export const Editor: React.FunctionComponent<{ new?: boolean }> = () =>
   <EditorContextProvider>
     <EditorLayout />
   </EditorContextProvider>
