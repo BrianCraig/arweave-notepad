@@ -20,7 +20,7 @@ import {
   TextArea,
   Visibility,
 } from 'semantic-ui-react'
-import whiteImage from './white-image.png'
+import { EditorContextProvider } from '../contexts/EditorContext'
 
 const style = {
   h1: {
@@ -31,8 +31,7 @@ const style = {
   }
 }
 
-
-export const Editor = () =>
+const EditorLayout = () =>
   <>
     <Header as='h1' content='My Notepad' style={style.h1} textAlign='center' />
     <Container>
@@ -40,15 +39,28 @@ export const Editor = () =>
         <Grid.Column width={4}>
           <Menu fluid vertical>
             <Menu.Item>
-              NoteX <Label>2</Label>
+              NoteX
             </Menu.Item>
             <Menu.Item>
-              NoteY <Label>2</Label>
+              NoteY
+            </Menu.Item>
+            <Menu.Item active>
+              NoteZ
+            </Menu.Item>
+            <Menu.Item icon='unlocked' >
+              <Icon name='hdd outline' />
+              NoteZ
             </Menu.Item>
             <Menu.Item>
-              NoteZ <Label>2</Label>
+              NoteZ
+            </Menu.Item>
+            <Menu.Item>
+              NoteZ
             </Menu.Item>
           </Menu>
+          <Button primary fluid>
+            New note
+          </Button>
         </Grid.Column>
         <Grid.Column width={12}>
           <Form>
@@ -57,8 +69,14 @@ export const Editor = () =>
           </Form>
           <Divider />
           <Grid>
-            <Grid.Column floated='right' width={6}>
-              <Button as='a' fluid>
+            <Grid.Column>
+              <Button color={'red'} disabled>
+                Discard Note Changes
+              </Button>
+              <Button color={'red'} disabled>
+                Remove Note
+              </Button>
+              <Button primary>
                 Save changes to Arweave Ledger
               </Button>
             </Grid.Column>
@@ -67,3 +85,9 @@ export const Editor = () =>
       </Grid>
     </Container>
   </>
+
+
+export const Editor = () =>
+  <EditorContextProvider>
+    <EditorLayout />
+  </EditorContextProvider>
