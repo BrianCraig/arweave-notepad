@@ -17,7 +17,6 @@ import {
 } from 'semantic-ui-react'
 import whiteImage from './white-image.png'
 
-
 const { MediaContextProvider, Media } = createMedia({
   breakpoints: {
     mobile: 0,
@@ -25,7 +24,6 @@ const { MediaContextProvider, Media } = createMedia({
     computer: 1024,
   },
 })
-
 
 const HomepageHeading: React.FunctionComponent<{ mobile: boolean }> = ({ mobile }) => (
   <Container text>
@@ -58,7 +56,6 @@ const HomepageHeading: React.FunctionComponent<{ mobile: boolean }> = ({ mobile 
     </Link>
   </Container>
 )
-
 
 class DesktopContainer extends Component<{}, { fixed: boolean }> {
   state = { fixed: false }
@@ -260,7 +257,7 @@ export const HomepageLayout = () => (
           horizontal
           style={{ margin: '3em 0em', textTransform: 'uppercase' }}
         >
-          <a href='#'>Case Studies</a>
+          <Link to="/">Case Studies</Link>
         </Divider>
 
         <Header as='h3' style={{ fontSize: '2em' }}>

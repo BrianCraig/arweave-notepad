@@ -11,7 +11,6 @@ export const EditorContext = React.createContext<EditorContextInterface>({
 });
 
 export const EditorContextProvider: React.FunctionComponent = ({ children }) => {
-
   const [uploading, setUploading] = useState(false)
   return <EditorContext.Provider value={
     {

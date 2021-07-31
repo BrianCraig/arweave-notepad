@@ -8,17 +8,18 @@ import './App.css';
 import 'semantic-ui-css/semantic.min.css'
 import { HomepageLayout } from "./pages/Homepage";
 import { Editor } from "./pages/Editor";
+import { Open } from "./pages/Open";
 
 
 function App() {
   return (
-    <HashRouter basename={window.location.pathname} hashType="noslash" >
+    <HashRouter hashType="noslash" >
       <Switch>
         <Route path="/new">
           <Editor new />
         </Route>
         <Route path="/:resourceid">
-          <Editor />
+          <Open />
         </Route>
         <Route path="/">
           <HomepageLayout />
