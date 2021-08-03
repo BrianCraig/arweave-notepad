@@ -6,7 +6,6 @@ import {
   Form,
   Grid,
   Header,
-  Icon,
   Input,
   Menu,
   Modal,
@@ -70,6 +69,18 @@ const EditorButtons = () => {
   </>
 }
 
+const MenuItems: React.FunctionComponent = () => {
+  const { notes, selectedNote, updateSelectedNoteIndex } = useContext(EditorContext);
+  return <>{notes.map((note, index) =>
+    <Menu.Item
+      children={note.title}
+      key={index}
+      active={selectedNote === note}
+      onClick={() => updateSelectedNoteIndex(index)}
+    />
+  )}</>
+}
+
 export const EditorLayout = () =>
   <>
     <UploadModal />
@@ -78,25 +89,7 @@ export const EditorLayout = () =>
       <Grid columns={2} stackable>
         <Grid.Column width={4}>
           <Menu fluid vertical>
-            <Menu.Item>
-              NoteX
-            </Menu.Item>
-            <Menu.Item>
-              NoteY
-            </Menu.Item>
-            <Menu.Item active>
-              NoteZ
-            </Menu.Item>
-            <Menu.Item icon='unlocked' >
-              <Icon name='hdd outline' />
-              NoteZ
-            </Menu.Item>
-            <Menu.Item>
-              NoteZ
-            </Menu.Item>
-            <Menu.Item>
-              NoteZ
-            </Menu.Item>
+            <MenuItems />
           </Menu>
           <Button primary fluid>
             New note
