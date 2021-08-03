@@ -30,3 +30,21 @@ export const EncryptionContextProvider: React.FunctionComponent = ({ children })
     {children}
   </EncryptionContext.Provider >
 }
+
+//crypto.subtle.digest('SHA-256', (new TextEncoder()).encode("Hi")).then(console.log)
+
+/*
+
+const rawKey = window.crypto.getRandomValues(new Uint8Array(16));
+
+function importSecretKey(rawKey) {
+  return window.crypto.subtle.importKey(
+    "raw",
+    rawKey,
+    "AES-CBC",
+    true,
+    ["encrypt", "decrypt"]
+  );
+}
+
+*/

@@ -3,15 +3,17 @@ import { Link, useParams } from 'react-router-dom';
 import { useFetch } from 'use-http'
 import { EncryptionContextProvider } from '../contexts/EncryptionContext';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
-import { Editor } from './Editor';
+import { EditorContextProvider } from '../contexts/EditorContext';
+import { Notes } from '../Types';
+import { EditorLayout } from '../components/EditorLayout';
 
 
 const OpenLayout = () => {
   let { resourceid } = useParams<{ resourceid: string }>();
-  const { loading, error, data } = useFetch(`/${resourceid}.json`, { data: [] }, [resourceid])
-  const [decryptedData, setDecryptedData] = useState(null);
+  const { loading, error, data } = useFetch<Notes>(`/${resourceid}.json`, { data: [] }, [resourceid])
+  const [decryptedData, setDecryptedData] = useState<Notes | undefined>();
   if (decryptedData) {
-    return <Editor />
+    return <EditorContextProvider notes={decryptedData}><EditorLayout /></EditorContextProvider>
   }
 
   return <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
