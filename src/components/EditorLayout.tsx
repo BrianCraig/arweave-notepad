@@ -81,6 +81,22 @@ const MenuItems: React.FunctionComponent = () => {
   )}</>
 }
 
+interface MyEventTarget extends EventTarget {
+  value: string
+}
+
+export const EditorForm = () => {
+  const { selectedNote, updateSelectedNote } = useContext(EditorContext)
+  const updateEvent = (value: 'title' | 'content') => (event: React.ChangeEvent<MyEventTarget>) => {
+    updateSelectedNote({ ...selectedNote, [value]: event.target.value })
+  }
+
+  return <Form>
+    <Input fluid transparent size='massive' placeholder='Title...' onChange={updateEvent('title')} value={selectedNote.title} />
+    <TextArea placeholder='Your notes...' value={selectedNote.content} style={style.textarea} onChange={updateEvent('content')} rows={20} />
+  </Form>
+}
+
 export const EditorLayout = () =>
   <>
     <UploadModal />
@@ -96,10 +112,7 @@ export const EditorLayout = () =>
           </Button>
         </Grid.Column>
         <Grid.Column width={12}>
-          <Form>
-            <Input transparent size='massive' placeholder='Title...' />
-            <TextArea placeholder='Your notes...' style={style.textarea} rows={20} />
-          </Form>
+          <EditorForm />
           <Divider />
           <Grid>
             <Grid.Column>
