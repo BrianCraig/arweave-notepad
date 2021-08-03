@@ -1,9 +1,7 @@
-import React, { Dispatch, SetStateAction, useState } from 'react';
+import React, { useState } from 'react';
 import { Note, Notes } from '../Types';
 
 interface EditorContextInterface {
-  uploading: boolean,
-  setUploading: Dispatch<SetStateAction<boolean>>
   notes: Notes,
   selectedNote: Note,
   updateSelectedNote: (note: Note) => any,
@@ -11,8 +9,6 @@ interface EditorContextInterface {
 }
 
 export const EditorContext = React.createContext<EditorContextInterface>({
-  uploading: false,
-  setUploading: () => { },
   notes: [],
   selectedNote: { title: '', content: '' },
   updateSelectedNote: () => { },
@@ -20,7 +16,6 @@ export const EditorContext = React.createContext<EditorContextInterface>({
 });
 
 export const EditorContextProvider: React.FunctionComponent<{ notes?: Notes }> = ({ children, notes: inputNotes }) => {
-  const [uploading, setUploading] = useState(false)
   const [notes, setNotes] = useState(inputNotes || [{ title: '', content: '' }])
   const [selectedNoteIndex, updateSelectedNoteIndex] = useState(0);
   const updateSelectedNote = (note: Note) => {
@@ -28,8 +23,6 @@ export const EditorContextProvider: React.FunctionComponent<{ notes?: Notes }> =
   }
   return <EditorContext.Provider value={
     {
-      uploading,
-      setUploading,
       notes,
       selectedNote: notes[selectedNoteIndex],
       updateSelectedNote,

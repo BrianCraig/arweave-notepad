@@ -6,14 +6,18 @@ import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 import { EditorContextProvider } from '../contexts/EditorContext';
 import { Notes } from '../Types';
 import { EditorLayout } from '../components/EditorLayout';
-
+import { EditorUploadContextProvider } from '../contexts/EditorUploadContext';
 
 const OpenLayout = () => {
   let { resourceid } = useParams<{ resourceid: string }>();
   const { loading, error, data } = useFetch<Notes>(`/${resourceid}.json`, { data: [] }, [resourceid])
   const [decryptedData, setDecryptedData] = useState<Notes | undefined>();
   if (decryptedData) {
-    return <EditorContextProvider notes={decryptedData}><EditorLayout /></EditorContextProvider>
+    return <EditorContextProvider notes={decryptedData}>
+      <EditorUploadContextProvider>
+        <EditorLayout />
+      </EditorUploadContextProvider>
+    </EditorContextProvider>
   }
 
   return <Grid textAlign='center' style={{ height: '100vh' }} verticalAlign='middle'>
