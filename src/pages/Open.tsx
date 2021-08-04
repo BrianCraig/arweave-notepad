@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useContext, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { useFetch } from 'use-http'
-import { EncryptionContextProvider } from '../contexts/EncryptionContext';
+import { EncryptionContext, EncryptionContextProvider } from '../contexts/EncryptionContext';
 import { Button, Form, Grid, Header, Message, Segment } from 'semantic-ui-react'
 import { EditorContextProvider } from '../contexts/EditorContext';
 import { Notes } from '../Types';
@@ -10,7 +10,9 @@ import { EditorUploadContextProvider } from '../contexts/EditorUploadContext';
 
 const OpenLayout = () => {
   let { resourceid } = useParams<{ resourceid: string }>();
-  const { loading, error, data } = useFetch<Notes>(`/${resourceid}.json`, { data: [] }, [resourceid])
+  const { loading, error, data } = useFetch<Buffer>(`/${resourceid}.bin`, { data: [], responseType: 'arrayBuffer' }, [resourceid])
+  const { setPassword, decrypt } = useContext(EncryptionContext)
+  console.log([data])
   const [decryptedData, setDecryptedData] = useState<Notes | undefined>();
   if (decryptedData) {
     return <EditorContextProvider notes={decryptedData}>
@@ -36,8 +38,9 @@ const OpenLayout = () => {
             iconPosition='left'
             placeholder='Password'
             type='password'
+            onChange={evt => setPassword(evt.target.value)}
           />
-          <Button color='teal' fluid size='large' onClick={() => setDecryptedData(data)} loading={loading} disabled={!!error}>
+          <Button color='teal' fluid size='large' onClick={() => decrypt(data!).then(setDecryptedData)} loading={loading} disabled={!!error}>
             Decrypt
           </Button>
         </Segment>

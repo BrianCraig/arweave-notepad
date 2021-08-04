@@ -1,4 +1,4 @@
-import { serialize, } from 'bson';
+import { serialize, deserialize } from 'bson';
 import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
 import { Notes } from '../Types';
 
@@ -18,8 +18,28 @@ export const EncryptionContext = React.createContext<EncryptionContextInterface>
 
 export const EncryptionContextProvider: React.FunctionComponent = ({ children }) => {
   const [password, setPassword] = useState('');
+  const decrypt = useCallback(async (data: Buffer) => {
+    const ddata = deserialize(data)
+    console.log(ddata)
+    const key256 = await crypto.subtle.digest('SHA-256', (new TextEncoder()).encode(password))
+    console.log(key256)
+    const iv = ddata.iv.buffer
+    console.log(iv)
+    const key = await crypto.subtle.importKey(
+      "raw",
+      key256,
+      "AES-CBC",
+      true,
+      ["encrypt", "decrypt"]
+    );
+    console.log(key)
+    const decryptedData = await crypto.subtle.decrypt({ name: "AES-CBC", iv: iv }, key, ddata.data.buffer)
+    console.log(decryptedData)
+    const out = deserialize(decryptedData) as Notes
+    console.log(out)
+    return out
+  }, [password])
 
-  const decrypt = useCallback(async () => [], [password])
   const encrypt = useCallback(async (notes) => {
     const serializedNotes = serialize(notes)
     console.log(serializedNotes)
