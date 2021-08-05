@@ -60,11 +60,9 @@ const style = {
 
 const EditorButtons = () => {
   const { startUploading } = useContext(EditorUploadContext)
+  const { deleteSelectedNote } = useContext(EditorContext);
   return <>
-    <Button color={'red'} disabled>
-      Discard Note Changes
-    </Button>
-    <Button color={'red'} disabled>
+    <Button color={'red'} onClick={deleteSelectedNote}>
       Remove Note
     </Button>
     <Button primary onClick={startUploading}>
@@ -101,6 +99,13 @@ export const EditorForm = () => {
   </Form>
 }
 
+const NewNote = () => {
+  const { createNote } = useContext(EditorContext);
+  return <Button primary fluid onClick={createNote}>
+    New note
+  </Button>
+}
+
 export const EditorLayout = () =>
   <>
     <UploadModal />
@@ -111,9 +116,7 @@ export const EditorLayout = () =>
           <Menu fluid vertical>
             <MenuItems />
           </Menu>
-          <Button primary fluid>
-            New note
-          </Button>
+          <NewNote />
         </Grid.Column>
         <Grid.Column width={12}>
           <EditorForm />
