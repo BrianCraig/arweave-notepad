@@ -1,27 +1,23 @@
-import { useContext } from 'react'
+import React, { useContext } from 'react'
 import {
   Button,
+  Card,
   Header,
   Input,
   Modal
 } from 'semantic-ui-react'
-import { EditorContext } from '../contexts/EditorContext'
-import { EditorUploadContext } from '../contexts/EditorUploadContext'
-import { EncryptionContext } from '../contexts/EncryptionContext'
+import { EditorUploadContext, EditorUploadStages } from '../contexts/EditorUploadContext'
+import { EncryptionContext, EncryptionContextProvider } from '../contexts/EncryptionContext'
 
-export const UploadLayout = () => {
-  return <UploadModal />
-}
+import { useFilePicker } from 'use-file-picker'
 
-const UploadModal = () => {
-  const { uploading, startUploading, stopUploading } = useContext(EditorUploadContext)
-  const { encrypt, setPassword, hasKey } = useContext(EncryptionContext)
-  const { notes } = useContext(EditorContext);
-  return <Modal
-    onClose={stopUploading}
-    onOpen={startUploading}
-    open={uploading}
-  >
+import Arweave from 'arweave'
+const arweave = Arweave.init({})
+
+const PasswordStage = () => {
+  const { setPassword, hasKey } = useContext(EncryptionContext)
+  const { setStage, stopUploading } = useContext(EditorUploadContext)
+  return <>
     <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
     <Modal.Content image>
       <Modal.Description>
@@ -41,9 +37,143 @@ const UploadModal = () => {
         labelPosition='right'
         icon='checkmark'
         disabled={!hasKey}
-        onClick={() => encrypt(notes)}
+        onClick={() => setStage(EditorUploadStages.provider)}
         positive
       />
     </Modal.Actions>
+  </>
+}
+
+const ProviderWalletCard = () => {
+  const [openFileSelector, { filesContent, loading }] = useFilePicker({
+    accept: '.json',
+    multiple: false,
+  });
+
+  return <Card onClick={openFileSelector}>
+    <Card.Content>
+      <Card.Header>Use your wallet file</Card.Header>
+      <Card.Description>
+        Click to Select your wallet file
+      </Card.Description>
+      {loading && <Card.Description>
+        Loading...
+      </Card.Description>}
+      {filesContent.map((file) => (
+        <Card.Description>
+          <b>{file.name}</b> selected
+        </Card.Description>
+      ))}
+    </Card.Content>
+  </Card>
+}
+
+const ProviderStage = () => {
+  const { setStage, stopUploading } = useContext(EditorUploadContext)
+  return <>
+    <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
+    <Modal.Content image>
+      <Modal.Description>
+        <Header>Define a provider for storing your notepad</Header>
+        <Card.Group>
+          <Card>
+            <Card.Content>
+              <Card.Header>ArConnect</Card.Header>
+              <Card.Meta>May contain additional fees</Card.Meta>
+              <Card.Description>
+                Click to Link to your ArConnect Plugin
+              </Card.Description>
+            </Card.Content>
+          </Card>
+          <ProviderWalletCard />
+        </Card.Group>
+      </Modal.Description>
+    </Modal.Content>
+    <Modal.Actions>
+      <Button color='black' onClick={stopUploading}>
+        Cancel
+      </Button>
+      <Button
+        content="Proceed"
+        labelPosition='right'
+        icon='checkmark'
+        onClick={() => setStage(EditorUploadStages.uploading)}
+        positive
+      />
+    </Modal.Actions>
+  </>
+}
+
+const UploadingStage = () => {
+  const { setStage, stopUploading } = useContext(EditorUploadContext)
+  return <>
+    <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
+    <Modal.Content image>
+      <Modal.Description>
+        <Header>Upload notepad</Header>
+        <Button color='black' onClick={stopUploading}>
+          Start Uploading
+        </Button>
+      </Modal.Description>
+    </Modal.Content>
+    <Modal.Actions>
+      <Button color='black' onClick={stopUploading}>
+        Cancel
+      </Button>
+      <Button
+        content="Proceed"
+        labelPosition='right'
+        icon='checkmark'
+        onClick={() => setStage(EditorUploadStages.done)}
+        positive
+      />
+    </Modal.Actions>
+  </>
+}
+
+const DoneStage = () => {
+  const { stopUploading } = useContext(EditorUploadContext)
+  return <>
+    <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
+    <Modal.Content image>
+      <Modal.Description>
+        <Header>Your notepad has been uploaded!</Header>
+        <p>
+          Your new url is xxx
+        </p>
+      </Modal.Description>
+    </Modal.Content>
+    <Modal.Actions>
+      <Button color='black' onClick={stopUploading}>
+        Close
+      </Button>
+    </Modal.Actions>
+  </>
+}
+
+
+const stagesComponentMap: Record<EditorUploadStages, React.FunctionComponent> = {
+  [EditorUploadStages.closed]: () => null,
+  [EditorUploadStages.password]: PasswordStage,
+  [EditorUploadStages.provider]: ProviderStage,
+  [EditorUploadStages.uploading]: UploadingStage,
+  [EditorUploadStages.done]: DoneStage,
+}
+
+const UploadModal = () => {
+  const { stage, startUploading, stopUploading } = useContext(EditorUploadContext)
+  const StageComponent = stagesComponentMap[stage]
+  return <Modal
+    onClose={stopUploading}
+    onOpen={startUploading}
+    open={stage !== EditorUploadStages.closed}
+  >
+    <StageComponent />
   </Modal>
+}
+
+export const UploadLayout = () => {
+  return <EncryptionContextProvider>
+    <UploadModal />
+  </EncryptionContextProvider>
 }

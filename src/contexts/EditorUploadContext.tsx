@@ -1,4 +1,12 @@
-import React, { useCallback, useState } from 'react';
+import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
+
+export enum EditorUploadStages {
+  closed,
+  password,
+  provider,
+  uploading,
+  done
+}
 
 const useStartStop = (initialState: boolean = false): [boolean, () => void, () => void] => {
   const [val, set] = useState<boolean>(initialState);
@@ -6,24 +14,27 @@ const useStartStop = (initialState: boolean = false): [boolean, () => void, () =
 }
 
 interface EditorUploadContextInterface {
-  uploading: boolean,
+  stage: EditorUploadStages,
+  setStage: Dispatch<SetStateAction<EditorUploadStages>>,
   startUploading: () => void,
   stopUploading: () => void
 }
 
 export const EditorUploadContext = React.createContext<EditorUploadContextInterface>({
-  uploading: false,
+  stage: EditorUploadStages.closed,
+  setStage: () => { },
   startUploading: () => { },
   stopUploading: () => { }
 });
 
 export const EditorUploadContextProvider: React.FunctionComponent = ({ children }) => {
-  const [uploading, startUploading, stopUploading] = useStartStop(false)
+  const [stage, setStage] = useState<EditorUploadStages>(EditorUploadStages.closed)
   return <EditorUploadContext.Provider value={
     {
-      uploading,
-      startUploading,
-      stopUploading
+      stage,
+      setStage,
+      startUploading: useCallback(() => setStage(EditorUploadStages.password), []),
+      stopUploading: useCallback(() => setStage(EditorUploadStages.closed), [])
     }} >
     {children}
   </EditorUploadContext.Provider >
