@@ -59,24 +59,6 @@ export const EncryptionContextProvider: React.FunctionComponent = ({ children })
     const encryptedData = await crypto.subtle.encrypt({ name: "AES-CBC", iv: iv }, key, serializedNotes)
     const final = await serialize({ protocol: "Arweave Notepad v1", iv, data: new Uint8Array(encryptedData) })
 
-    const blob = new Blob([final], {
-      type: 'application/octet-stream'
-    })
-
-    const downloadURL = (data: string, fileName: string) => {
-      const a = document.createElement('a')
-      a.href = data
-      a.download = fileName
-      document.body.appendChild(a)
-      a.style.display = 'none'
-      a.click()
-      a.remove()
-    }
-
-    const url = window.URL.createObjectURL(blob)
-
-    downloadURL(url, 'example.bson')
-
     return final
   }, [key])
 

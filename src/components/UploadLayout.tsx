@@ -1,4 +1,4 @@
-import React, { useContext } from 'react'
+import React, { useContext, useEffect } from 'react'
 import {
   Button,
   Card,
@@ -10,9 +10,8 @@ import { EditorUploadContext, EditorUploadStages } from '../contexts/EditorUploa
 import { EncryptionContext, EncryptionContextProvider } from '../contexts/EncryptionContext'
 
 import { useFilePicker } from 'use-file-picker'
+import { ProviderContext } from '../contexts/ProviderContext'
 
-import Arweave from 'arweave'
-const arweave = Arweave.init({})
 
 const PasswordStage = () => {
   const { setPassword, hasKey } = useContext(EncryptionContext)
@@ -45,10 +44,19 @@ const PasswordStage = () => {
 }
 
 const ProviderWalletCard = () => {
+  const { setProvider } = useContext(EditorUploadContext)
+
   const [openFileSelector, { filesContent, loading }] = useFilePicker({
     accept: '.json',
     multiple: false,
   });
+
+  const file = filesContent[0]
+  useEffect(() => {
+    if (file) {
+      setProvider(JSON.parse(file.content))
+    }
+  }, [file, setProvider])
 
   return <Card onClick={openFileSelector}>
     <Card.Content>
@@ -72,7 +80,7 @@ const ProviderStage = () => {
   const { setStage, stopUploading } = useContext(EditorUploadContext)
   return <>
     <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
-    <Modal.Content image>
+    <Modal.Content>
       <Modal.Description>
         <Header>Define a provider for storing your notepad</Header>
         <Card.Group>
@@ -105,15 +113,18 @@ const ProviderStage = () => {
 }
 
 const UploadingStage = () => {
+  const { readyToDeploy, deploy, deployedAt, price, deployed } = useContext(ProviderContext)
   const { setStage, stopUploading } = useContext(EditorUploadContext)
   return <>
     <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
     <Modal.Content image>
       <Modal.Description>
         <Header>Upload notepad</Header>
-        <Button color='black' onClick={stopUploading}>
+        <Button color='black' onClick={deploy} disabled={!readyToDeploy}>
           Start Uploading
         </Button>
+        {price && <p>Transaction costs {price} AR.</p>}
+        {deployedAt && <p>ID will be {deployedAt}.</p>}
       </Modal.Description>
     </Modal.Content>
     <Modal.Actions>
@@ -124,6 +135,7 @@ const UploadingStage = () => {
         content="Proceed"
         labelPosition='right'
         icon='checkmark'
+        disabled={!deployed}
         onClick={() => setStage(EditorUploadStages.done)}
         positive
       />
