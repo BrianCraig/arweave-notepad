@@ -223,7 +223,7 @@ export const HomepageLayout = () => (
             <Header as='h3' style={{ fontSize: '2em' }}>
               Using Arweave Notepad Protocol v1
             </Header>
-            <p style={{ fontSize: '1.33em' }}>Check in the <a target="_blank" href="https://github.com/BrianCraig/arweave-notepad/" rel={"noreferrer"}>Github Repository</a> the v1 Protocol</p>
+            <p style={{ fontSize: '1.33em' }}>Check in the <a target="_blank" href="https://github.com/BrianCraig/arweave-notepad/blob/main/v1-protocol.md" rel={"noreferrer"}>Github Repository</a> the v1 Protocol</p>
           </Grid.Column>
         </Grid.Row>
       </Grid>
