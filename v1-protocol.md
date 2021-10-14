@@ -18,7 +18,7 @@ BSON({
   {
     protocol: "Arweave Notepad v1", 
     iv: IV,
-    data: AESCBCEncrypt({
+    data: AESCBCEncrypt(
       BSON({
         notes: [
           {
@@ -30,7 +30,7 @@ BSON({
       }),
       key,
       IV
-    })
+    )
   }
 })
 ```
