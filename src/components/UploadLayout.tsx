@@ -4,6 +4,7 @@ import {
   Card,
   Header,
   Input,
+  Label,
   Modal
 } from 'semantic-ui-react'
 import { EditorUploadContext, EditorUploadStages } from '../contexts/EditorUploadContext'
@@ -86,7 +87,7 @@ const ProviderStage = () => {
         <Card.Group>
           <Card>
             <Card.Content>
-              <Card.Header>ArConnect</Card.Header>
+              <Card.Header>ArConnect <Label>Work in progress</Label></Card.Header>
               <Card.Meta>May contain additional fees</Card.Meta>
               <Card.Description>
                 Click to Link to your ArConnect Plugin
