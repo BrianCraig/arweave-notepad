@@ -10,7 +10,7 @@ import { EditorUploadContextProvider } from '../contexts/EditorUploadContext';
 
 const OpenLayout = () => {
   let { resourceid } = useParams<{ resourceid: string }>();
-  const { loading, error, data } = useFetch<Buffer>(`/${resourceid}.bson`, { data: [], responseType: 'arrayBuffer' }, [resourceid])
+  const { loading, error, data } = useFetch<Buffer>(`https://arweave.net/${resourceid}`, { data: [], responseType: 'arrayBuffer' }, [resourceid])
   const { setPassword, decrypt } = useContext(EncryptionContext)
   const [decryptedData, setDecryptedData] = useState<Notes | undefined>();
   if (decryptedData) {
