@@ -187,7 +187,7 @@ export const HomepageLayout = () => (
               Completely private
             </Header>
             <p style={{ fontSize: '1.33em' }}>
-              All your notes are stored and encrypted, all the encryption/decription is made entirely on your browser
+              All your notes are stored and encrypted, all the encryption/decryption is made entirely on your browser
             </p>
             <Header as='h3' style={{ fontSize: '2em' }}>
               Open source
