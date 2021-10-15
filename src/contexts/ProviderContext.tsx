@@ -2,7 +2,7 @@
 import Arweave from 'arweave'
 import Transaction from 'arweave/node/lib/transaction';
 import { JWKInterface } from 'arweave/node/lib/wallet';
-import { createContext, useContext, useEffect, useState } from "react";
+import { createContext, useCallback, useContext, useEffect, useState } from "react";
 import { EditorContext } from './EditorContext';
 import { EncryptionContext } from "./EncryptionContext";
 const arweave = Arweave.init({})
@@ -31,35 +31,55 @@ export const WalletProviderContextProvider: React.FunctionComponent<{ walletKey:
   const { encrypt } = useContext(EncryptionContext)
   const { notes } = useContext(EditorContext)
   const [transaction, setTransaction] = useState<Transaction | null>(null)
+  const [uploaded, setUploaded] = useState<boolean>(false)
+  const [confirmations, setConfirmations] = useState<number>(0);
 
   useEffect(() => {
     const createTransaction = async () => {
-      const ongoingTransaction = await arweave.createTransaction({
+      let ongoingTransaction = await arweave.createTransaction({
         data: await encrypt(notes)
       }, walletKey);
       ongoingTransaction.addTag('Content-Type', 'application/bson');
 
       await arweave.transactions.sign(ongoingTransaction, walletKey);
       setTransaction(ongoingTransaction);
-      console.log({ ...ongoingTransaction })
-      /* for await (const uploader of arweave.transactions.upload(ongoingTransaction)) {
-        console.log(uploader);
-      } */
-      console.log(ongoingTransaction)
     }
     createTransaction();
 
     return () => { }
   }, [encrypt, walletKey, notes])
 
+  let deploy = useCallback(async () => {
+    if (transaction !== null && uploaded === false) {
+      const response = await arweave.transactions.post(transaction);
+      if (response.status === 200) {
+        setUploaded(true)
+      }
+    }
+  }, [transaction, uploaded])
+
+  useEffect(() => {
+    if (transaction !== null && uploaded) {
+      const lookupTransaction = async () => {
+        const ongoingTransaction = await arweave.transactions.getStatus(transaction.id);
+        if (ongoingTransaction.confirmed) {
+          setConfirmations(ongoingTransaction.confirmed.number_of_confirmations);
+        }
+      }
+      let interval = setInterval(lookupTransaction, 10 * 1000);
+
+      return () => clearInterval(interval)
+    }
+  }, [transaction, uploaded])
+
   return <ProviderContext.Provider value={
     {
       readyToDeploy: transaction !== null,
-      deploy: () => { },
+      deploy,
       price: transaction ? arweave.ar.winstonToAr(transaction.reward) : null,
-      deployed: false,
+      deployed: uploaded,
       deployedAt: transaction ? transaction.id : null,
-      confirmations: 0,
+      confirmations,
       error: null
     }} >
     {children}

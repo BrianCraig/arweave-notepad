@@ -12,6 +12,7 @@ import { EncryptionContext, EncryptionContextProvider } from '../contexts/Encryp
 
 import { useFilePicker } from 'use-file-picker'
 import { ProviderContext } from '../contexts/ProviderContext'
+import { Link } from 'react-router-dom'
 
 
 const PasswordStage = () => {
@@ -45,7 +46,7 @@ const PasswordStage = () => {
 }
 
 const ProviderWalletCard = () => {
-  const { setProvider } = useContext(EditorUploadContext)
+  const { setProvider, setStage } = useContext(EditorUploadContext)
 
   const [openFileSelector, { filesContent, loading }] = useFilePicker({
     accept: '.json',
@@ -56,6 +57,7 @@ const ProviderWalletCard = () => {
   useEffect(() => {
     if (file) {
       setProvider(JSON.parse(file.content))
+      setStage(EditorUploadStages.uploading)
     }
   }, [file, setProvider])
 
@@ -114,7 +116,7 @@ const ProviderStage = () => {
 }
 
 const UploadingStage = () => {
-  const { readyToDeploy, deploy, deployedAt, price, deployed } = useContext(ProviderContext)
+  const { readyToDeploy, deploy, deployedAt, price, deployed, confirmations } = useContext(ProviderContext)
   const { setStage, stopUploading } = useContext(EditorUploadContext)
   return <>
     <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
@@ -124,8 +126,9 @@ const UploadingStage = () => {
         <Button color='black' onClick={deploy} disabled={!readyToDeploy}>
           Start Uploading
         </Button>
-        {price && <p>Transaction costs {price} AR.</p>}
+        {price && <p>Transaction costs is {price} AR.</p>}
         {deployedAt && <p>ID will be {deployedAt}.</p>}
+        {deployed && <p>{confirmations > 0 ? "deployed" : "pending"}, received {confirmations} confirmations.</p>}
       </Modal.Description>
     </Modal.Content>
     <Modal.Actions>
@@ -146,13 +149,14 @@ const UploadingStage = () => {
 
 const DoneStage = () => {
   const { stopUploading } = useContext(EditorUploadContext)
+  const { deployedAt } = useContext(ProviderContext)
   return <>
-    <Modal.Header>Save changes to Arweawe Ledger</Modal.Header>
+    <Modal.Header>Changes Saved!</Modal.Header>
     <Modal.Content image>
       <Modal.Description>
         <Header>Your notepad has been uploaded!</Header>
         <p>
-          Your new url is xxx
+          Your new url id is <Link to={`/${deployedAt}`}>{deployedAt}</Link>
         </p>
       </Modal.Description>
     </Modal.Content>
