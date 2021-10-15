@@ -27,7 +27,7 @@ const OpenLayout = () => {
         Access your notepad
       </Header>
       {error && <Message error>
-        The resource '{resourceid}' isn't a notepad, check the URL
+        The resource '{resourceid}' isn't a notepad, or may be pending, check the URL or wait
       </Message>}
       <Form size='large'>
         <Segment stacked>
