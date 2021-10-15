@@ -1,5 +1,6 @@
 import { JWKInterface } from 'arweave/node/lib/wallet';
 import React, { Dispatch, SetStateAction, useCallback, useState } from 'react';
+import { EncryptionContextProvider } from './EncryptionContext';
 import { WalletProviderContextProvider } from './ProviderContext';
 
 export enum EditorUploadStages {
@@ -8,11 +9,6 @@ export enum EditorUploadStages {
   provider,
   uploading,
   done
-}
-
-const useStartStop = (initialState: boolean = false): [boolean, () => void, () => void] => {
-  const [val, set] = useState<boolean>(initialState);
-  return [val, useCallback(() => set(true), [set]), useCallback(() => set(false), [set])]
 }
 
 interface EditorUploadContextInterface {
@@ -43,10 +39,10 @@ export const EditorUploadContextProvider: React.FunctionComponent = ({ children 
       startUploading: useCallback(() => setStage(EditorUploadStages.password), []),
       stopUploading: useCallback(() => setStage(EditorUploadStages.closed), [])
     }} >
-    {
+    <EncryptionContextProvider>{
       addProviderContext ?
         <WalletProviderContextProvider walletKey={provider as JWKInterface}>{children}</WalletProviderContextProvider> :
         children
-    }
+    }</EncryptionContextProvider>
   </EditorUploadContext.Provider >
 }

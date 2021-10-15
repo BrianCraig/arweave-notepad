@@ -8,7 +8,7 @@ import {
   Modal
 } from 'semantic-ui-react'
 import { EditorUploadContext, EditorUploadStages } from '../contexts/EditorUploadContext'
-import { EncryptionContext, EncryptionContextProvider } from '../contexts/EncryptionContext'
+import { EncryptionContext } from '../contexts/EncryptionContext'
 
 import { useFilePicker } from 'use-file-picker'
 import { ProviderContext } from '../contexts/ProviderContext'
@@ -190,7 +190,5 @@ const UploadModal = () => {
 }
 
 export const UploadLayout = () => {
-  return <EncryptionContextProvider>
-    <UploadModal />
-  </EncryptionContextProvider>
+  return <UploadModal />
 }

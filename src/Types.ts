@@ -1,5 +1,3 @@
-import { serialize, Long } from 'bson'
-
 export interface Note {
   title: string,
   content: string

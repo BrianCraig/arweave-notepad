@@ -57,8 +57,7 @@ export const EncryptionContextProvider: React.FunctionComponent = ({ children })
     const serializedNotes = serialize({ notes })
     const iv = crypto.getRandomValues(new Uint8Array(16));
     const encryptedData = await crypto.subtle.encrypt({ name: "AES-CBC", iv: iv }, key, serializedNotes)
-    const final = await serialize({ protocol: "Arweave Notepad v1", iv, data: new Uint8Array(encryptedData) })
-
+    const final = serialize({ protocol: "Arweave Notepad v1", iv, data: new Uint8Array(encryptedData) })
     return final
   }, [key])
 
