@@ -4,8 +4,8 @@ Easily mantain a notebook that stays forever, securily and privately in the Arwe
 
 ## Latest build
 
-Commit #51e50ef
-[https://arweave.net/Zp8CB0fBplxqpLx0ZqoI32hkKGa9nXczK74Werz9zW8](https://arweave.net/Zp8CB0fBplxqpLx0ZqoI32hkKGa9nXczK74Werz9zW8)
+Commit e0eea4bca70ef497a787fea8d4a01f1e3393b530
+[https://arweave.net/nxHelVpR2eydXBvAPt7tu1qzU5wMjwJR9WCpiQNIgTs](https://arweave.net/nxHelVpR2eydXBvAPt7tu1qzU5wMjwJR9WCpiQNIgTs)
 
 ## Protocol Documentation
 
